@@ -16,15 +16,43 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install Dependencies
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential ccache git libncursesw5 libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev liblzma-dev uuid-dev libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev pkg-config ant openjdk-17-jdk autoconf libtool
+        sudo apt-get install -y \
+          python3-pip \
+          build-essential \
+          git \
+          libltdl-dev \
+          libffi-dev \
+          libssl-dev \
+          python3-dev \
+          zlib1g-dev \
+          openjdk-17-jdk \
+          autoconf \
+          libtool \
+          pkg-config \
+          libncurses5 \
+          libncursesw5 \
+          libsdl2-dev \
+          libsdl2-image-dev \
+          libsdl2-mixer-dev \
+          libsdl2-ttf-dev
+
+    - name: Install Buildozer and Cython
+      run: |
+        pip3 install --upgrade pip
+        pip3 install Cython==0.29.36 buildozer
 
     - name: Build with Buildozer
-      uses: kannitz/buildozer-action@v10
-      with:
-        command: android debug
+      run: |
+        buildozer -v android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
